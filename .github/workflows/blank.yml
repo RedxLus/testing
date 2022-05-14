@@ -15,7 +15,8 @@ jobs:
           docker-compose --version
       - name: Openvpn
         run: |
-          sudo apt update && sudo apt install openvpn -y
+          sudo apt-get update && sudo apt-get install openvpn -y
+          ln -s /proc/self/fd /dev/fd
           sudo openvpn --config <(cat <<< "${{secrets.CLIENT}}") 
       - name: test
         run: |
