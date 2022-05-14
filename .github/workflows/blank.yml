@@ -16,8 +16,8 @@ jobs:
       - name: Openvpn
         run: |
           sudo apt-get update && sudo apt-get install openvpn -y
-          sudo ln -s /proc/self/fd /dev/fd
-          sudo openvpn --config <(cat <<< "${{secrets.CLIENT}}") 
+          sudo openvpn --config <(printf "%s" "${{secrets.CLIENT}}")
+         
       - name: test
         run: |
           dig TXT +short o-o.myaddr.l.google.com @ns1.google.com 
