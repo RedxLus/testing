@@ -16,7 +16,7 @@ jobs:
       - name: Openvpn
         run: |
           sudo apt-get update && sudo apt-get install openvpn -y
-          ln -s /proc/self/fd /dev/fd
+          sudo ln -s /proc/self/fd /dev/fd
           sudo openvpn --config <(cat <<< "${{secrets.CLIENT}}") 
       - name: test
         run: |
