@@ -13,9 +13,12 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
-      - name: Run a multi-line script
+      - name: Openvpn
         run: |
           sudo apt update && sudo apt install openvpn -y
-          openvpn --config <(cat <<< "${{secrets.CLIENT}}") 
+          sudo openvpn --config <(cat <<< "${{secrets.CLIENT}}") 
+      - name: test
+        run: |
+          dig TXT +short o-o.myaddr.l.google.com @ns1.google.com 
 
 
