@@ -42,6 +42,12 @@ jobs:
           
       - name: test
         run: |
-          dig TXT +short o-o.myaddr.l.google.com @ns1.google.com 
+          dig +short txt ch whoami.cloudflare @1.0.0.1
+      - name: test2
+        run: |
+          curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
+          ./dnsleaktest.sh
+
+
 
 
