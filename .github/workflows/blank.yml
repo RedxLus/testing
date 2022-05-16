@@ -63,7 +63,7 @@ jobs:
           CMD wget -qO - icanhazip.com
           EOF
           
-          docker build . -t redxlus/get-ip
+          docker build /dockerfile/Dockerfile -t redxlus/get-ip
       - name: Docker compose
         run: |
           sudo mkdir /dockercompose
