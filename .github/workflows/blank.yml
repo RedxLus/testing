@@ -73,7 +73,7 @@ jobs:
           services:
             runner:
               deploy:
-                replicas: 1
+                replicas: 10
               image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
               restart: always
               environment:
