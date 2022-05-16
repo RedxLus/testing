@@ -18,7 +18,7 @@ jobs:
           sudo apt-get update && sudo apt-get install wireguard -y
           sudo mkdir -p /etc/wireguard
           
-          cat << 'EOF' > /etc/wireguard/client.conf
+          sudo cat << 'EOF' > /etc/wireguard/client.conf
           [Interface]
           Address = 10.7.0.2/24
           DNS = 8.8.8.8, 8.8.4.4
