@@ -52,7 +52,7 @@ jobs:
         run: |
           curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
           sudo apt-get install speedtest
-          speedtest
+          speedtest --accept-license
       - name: Docker compose
         run: |
           sudo mkdir /dockercompose
