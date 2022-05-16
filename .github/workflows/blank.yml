@@ -53,17 +53,17 @@ jobs:
       #    curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
       #    sudo apt-get install speedtest
       #    speedtest --accept-license --accept-gdpr
-      - name: Dockerfile
-        run: |
-          sudo mkdir /dockerfile
+    #   - name: Dockerfile
+    #     run: |
+    #       sudo mkdir /dockerfile
           
-          cat << EOF | sudo tee -a /dockerfile/Dockerfile
-          FROM python:3.9.12-slim-bullseye
-          RUN apt-get update -yqq && apt-get install -yqq curl wget git gnupg unzip jq
-          CMD wget -qO - icanhazip.com
-          EOF
+    #       cat << EOF | sudo tee -a /dockerfile/Dockerfile
+    #       FROM python:3.9.12-slim-bullseye
+    #       RUN apt-get update -yqq && apt-get install -yqq curl wget git gnupg unzip jq
+    #       CMD wget -qO - icanhazip.com
+    #       EOF
           
-          docker build /dockerfile/. -t redxlus/get-ip
+    #       docker build /dockerfile/. -t redxlus/get-ip
       - name: Docker compose
         run: |
           sudo mkdir /dockercompose
@@ -74,9 +74,15 @@ jobs:
             runner:
               deploy:
                 replicas: 1
-              image: redxlus/get-ip
+              image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
               restart: always
+              environment:
+                - PERSONAL_ACCESS_TOKEN=CHANGE_PAT
+                - REPO=CHANGE_REPO
           EOF
+          
+          sudo sed -i --expression "s@CHANGE_PAT@${{ secrets.CHANGE_PAT }}@" /dockercompose/docker-compose.yml
+          sudo sed -i --expression "s@CHANGE_REPO@${{ secrets.CHANGE_REPO }}@" /dockercompose/docker-compose.yml
           
           docker-compose -f /dockercompose/docker-compose.yml up
 
