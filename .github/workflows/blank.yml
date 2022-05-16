@@ -84,7 +84,9 @@ jobs:
           sudo sed -i --expression "s@CHANGE_PAT@${{ secrets.CHANGE_PAT }}@" /dockercompose/docker-compose.yml
           sudo sed -i --expression "s@CHANGE_REPO@${{ secrets.CHANGE_REPO }}@" /dockercompose/docker-compose.yml
           
-          docker-compose -f /dockercompose/docker-compose.yml up -d
+          docker init swarm
+          docker stack deploy --compose-file="/dockercompose/docker-compose.yml" stack
+
 
 
 
