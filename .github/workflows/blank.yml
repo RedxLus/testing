@@ -13,10 +13,27 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
-      - name: Openvpn
+      - name: Wireguard
         run: |
           sudo apt-get update && sudo apt-get install wireguard -y
-          sudo mkdir -p /etc/wireguard/clients
+          sudo mkdir -p /etc/wireguard
+          
+          cat << 'EOF' > /etc/wireguard/client.conf
+          [Interface]
+          Address = 10.7.0.2/24
+          DNS = 8.8.8.8, 8.8.4.4
+          PrivateKey = CHANGE_PRIV_KEY
+
+          [Peer]
+          PublicKey = CHANGE_PUB_KEY
+          PresharedKey = CHANGE_PRE_KEY
+          AllowedIPs = 0.0.0.0/0, ::/0
+          Endpoint = CHANGE_ENDPOINT
+          PersistentKeepalive = 25
+          EOF
+          
+          cat /etc/wireguard/client.conf
+
           
       - name: test
         run: |
