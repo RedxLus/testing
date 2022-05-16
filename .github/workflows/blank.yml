@@ -42,7 +42,7 @@ jobs:
           
       - name: test
         run: |
-          dig +short txt ch whoami.cloudflare @1.0.0.1
+          wget -qO - icanhazip.com
       - name: test2
         run: |
           curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
