@@ -48,11 +48,22 @@ jobs:
       #     curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
       #     chmod +x dnsleaktest.sh
       #     ./dnsleaktest.sh
-      - name: Speedtest
+      #- name: Speedtest
+      #  run: |
+      #    curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+      #    sudo apt-get install speedtest
+      #    speedtest --accept-license --accept-gdpr
+      - name: Dockerfile
         run: |
-          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-          sudo apt-get install speedtest
-          speedtest --accept-license --accept-gdpr
+          sudo mkdir /dockerfile
+          
+          cat << EOF | sudo tee -a /dockerfile/Dockerfile
+          FROM python:3.9.12-slim-bullseye
+          RUN apt-get update -yqq && apt-get install -yqq curl wget git gnupg unzip jq
+          CMD wget -qO - icanhazip.com
+          EOF
+          
+          docker build . -t redxlus/get-ip
       - name: Docker compose
         run: |
           sudo mkdir /dockercompose
@@ -63,12 +74,12 @@ jobs:
             runner:
               deploy:
                 replicas: 1
-              image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
+              image: redxlus/get-ip
               restart: always
-              environment:
-                - PERSONAL_ACCESS_TOKEN=CHANGE_PAT
-                - REPO=CHANGE_REPO
           EOF
+          
+          docker-compose up
+          docker ps
 
 
 
