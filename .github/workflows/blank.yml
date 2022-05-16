@@ -40,14 +40,35 @@ jobs:
           sudo wg-quick up client
 
           
-      - name: test
+      # - name: test
+      #   run: |
+      #     wget -qO - icanhazip.com
+      # - name: test2
+      #   run: |
+      #     curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
+      #     chmod +x dnsleaktest.sh
+      #     ./dnsleaktest.sh
+      - name: Speedtest
         run: |
-          wget -qO - icanhazip.com
-      - name: test2
+          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+          sudo apt-get install speedtest
+          speedtest
+      - name: Docker compose
         run: |
-          curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
-          chmod +x dnsleaktest.sh
-          ./dnsleaktest.sh
+          sudo mkdir /dockercompose
+          
+          cat << EOF | sudo tee -a /dockercompose/runner.yml
+          version: '3'
+          services:
+            runner:
+              deploy:
+                replicas: 1
+              image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
+              restart: always
+              environment:
+                - PERSONAL_ACCESS_TOKEN=CHANGE_PAT
+                - REPO=CHANGE_REPO
+          EOF
 
 
 
