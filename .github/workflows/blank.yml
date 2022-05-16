@@ -32,10 +32,10 @@ jobs:
           PersistentKeepalive = 25
           EOF
           
-          sudo sed -i 's/CHANGE_PRIV_KEY/${{ secrets.CHANGE_PRIV_KEY }}/g' /etc/wireguard/client.conf
-          sudo sed -i 's/CHANGE_PUB_KEY/${{ secrets.CHANGE_PUB_KEY }}/g' /etc/wireguard/client.conf
-          sudo sed -i 's/CHANGE_PRE_KEY/${{ secrets.CHANGE_PRE_KEY }}/g' /etc/wireguard/client.conf
-          sudo sed -i 's/CHANGE_ENDPOINT/${{ secrets.CHANGE_ENDPOINT }}/g' /etc/wireguard/client.conf
+          sudo sed -i 's/CHANGE_PRIV_KEY/"${{ secrets.CHANGE_PRIV_KEY }}"/g' /etc/wireguard/client.conf
+          sudo sed -i 's/CHANGE_PUB_KEY/"${{ secrets.CHANGE_PUB_KEY }}"/g' /etc/wireguard/client.conf
+          sudo sed -i 's/CHANGE_PRE_KEY/"${{ secrets.CHANGE_PRE_KEY }}"/g' /etc/wireguard/client.conf
+          sudo sed -i 's/CHANGE_ENDPOINT/"${{ secrets.CHANGE_ENDPOINT }}"/g' /etc/wireguard/client.conf
           
           sudo wg-quick up client
 
