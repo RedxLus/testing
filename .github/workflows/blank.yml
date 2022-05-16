@@ -68,7 +68,7 @@ jobs:
         run: |
           sudo mkdir /dockercompose
           
-          cat << EOF | sudo tee -a /dockercompose/runner.yml
+          cat << EOF | sudo tee -a /dockercompose/docker-compose.yml
           version: '3'
           services:
             runner:
@@ -78,8 +78,8 @@ jobs:
               restart: always
           EOF
           
-          docker-compose up
-          docker ps
+          docker-compose -f /dockercompose/docker-compose.yml up
+
 
 
 
