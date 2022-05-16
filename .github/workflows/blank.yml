@@ -15,7 +15,7 @@ jobs:
           docker-compose --version
       - name: Wireguard
         run: |
-          sudo apt-get update && sudo apt-get install wireguard -y
+          sudo apt-get update && sudo apt-get install wireguard openresolv -y
           sudo mkdir -p /etc/wireguard
           
           cat << EOF | sudo tee -a /etc/wireguard/client.conf
