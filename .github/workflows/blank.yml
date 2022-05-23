@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Docker Compose
@@ -73,7 +73,7 @@ jobs:
           services:
             runner:
               deploy:
-                replicas: 10
+                replicas: 3
               image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
               restart: always
               environment:
