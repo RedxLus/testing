@@ -87,6 +87,9 @@ jobs:
           docker swarm init
           docker stack deploy --compose-file="/dockercompose/docker-compose.yml" stack
 
+      - name: SSL
+        run: apt-get update && apt-get install python3-pip -y && pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org pip setuptools
+        
       - name: Wait
         run: sleep infinity
 
