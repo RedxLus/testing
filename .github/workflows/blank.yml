@@ -48,11 +48,11 @@ jobs:
       #     curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
       #     chmod +x dnsleaktest.sh
       #     ./dnsleaktest.sh
-      - name: Speedtest
-        run: |
-          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-          sudo apt-get install speedtest
-          speedtest --accept-license --accept-gdpr
+      #- name: Speedtest
+      #  run: |
+      #    curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+      #    sudo apt-get install speedtest
+      #    speedtest --accept-license --accept-gdpr
     #   - name: Dockerfile
     #     run: |
     #       sudo mkdir /dockerfile
