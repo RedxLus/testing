@@ -12,7 +12,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt upgrade -y
-          sudo apt-get install docker.io -y
+          sudo apt-get install containerd docker.io -y
           sudo systemctl start docker.service
           sudo systemctl enable docker.service
           sudo docker version
