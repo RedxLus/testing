@@ -19,33 +19,87 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
+    #   - name: Wireguard
+    #     run: |
+    #       sudo apt-get update && sudo apt-get install wireguard openresolv -y
+    #       sudo mkdir -p /etc/wireguard
+          
+    #       cat << EOF | sudo tee -a /etc/wireguard/client.conf
+    #       [Interface]
+    #       Address = 10.7.0.2/24
+    #       DNS = 1.1.1.1, 1.0.0.1
+    #       PrivateKey = CHANGE_PRIV_KEY
+
+    #       [Peer]
+    #       PublicKey = CHANGE_PUB_KEY
+    #       PresharedKey = CHANGE_PRE_KEY
+    #       AllowedIPs = 0.0.0.0/0, ::/0
+    #       Endpoint = CHANGE_ENDPOINT
+    #       PersistentKeepalive = 25
+    #       EOF
+          
+    #       sudo sed -i --expression "s@CHANGE_PRIV_KEY@${{ secrets.CHANGE_PRIV_KEY }}@" /etc/wireguard/client.conf
+    #       sudo sed -i --expression "s@CHANGE_PUB_KEY@${{ secrets.CHANGE_PUB_KEY }}@" /etc/wireguard/client.conf
+    #       sudo sed -i --expression "s@CHANGE_PRE_KEY@${{ secrets.CHANGE_PRE_KEY }}@" /etc/wireguard/client.conf
+    #       sudo sed -i --expression "s@CHANGE_ENDPOINT@${{ secrets.CHANGE_ENDPOINT }}@" /etc/wireguard/client.conf
+          
+    #       sudo wg-quick up client
+
       - name: Wireguard
         run: |
-          sudo apt-get update && sudo apt-get install wireguard openresolv -y
-          sudo mkdir -p /etc/wireguard
+          sudo apt-get update && sudo apt install apt-transport-https -y
+          sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
+          sudo apt-key add openvpn-repo-pkg-key.pub
+          sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-focal.list
+          sudo apt update
+          sudo apt install openvpn3
           
-          cat << EOF | sudo tee -a /etc/wireguard/client.conf
-          [Interface]
-          Address = 10.7.0.2/24
-          DNS = 1.1.1.1, 1.0.0.1
-          PrivateKey = CHANGE_PRIV_KEY
-
-          [Peer]
-          PublicKey = CHANGE_PUB_KEY
-          PresharedKey = CHANGE_PRE_KEY
-          AllowedIPs = 0.0.0.0/0, ::/0
-          Endpoint = CHANGE_ENDPOINT
-          PersistentKeepalive = 25
+          cat << EOF | sudo tee -a /tmp/client.ovpn
+            client
+            dev tun
+            proto udp
+            remote CHANGE_IP
+            resolv-retry infinite
+            nobind
+            persist-key
+            persist-tun
+            remote-cert-tls server
+            auth SHA512
+            cipher AES-256-CBC
+            ignore-unknown-option block-outside-dns
+            block-outside-dns
+            verb 3
+            <ca>
+            -----BEGIN CERTIFICATE-----
+            CHANGE_CA
+            -----END CERTIFICATE-----
+            </ca>
+            <cert>
+            -----BEGIN CERTIFICATE-----
+            CHANGE_CERT
+            -----END CERTIFICATE-----
+            </cert>
+            <key>
+            -----BEGIN PRIVATE KEY-----
+            CHANGE_PRIV
+            -----END PRIVATE KEY-----
+            </key>
+            <tls-crypt>
+            -----BEGIN OpenVPN Static key V1-----
+            CHANGE_TLS
+            -----END OpenVPN Static key V1-----
+            </tls-crypt>
           EOF
           
-          sudo sed -i --expression "s@CHANGE_PRIV_KEY@${{ secrets.CHANGE_PRIV_KEY }}@" /etc/wireguard/client.conf
-          sudo sed -i --expression "s@CHANGE_PUB_KEY@${{ secrets.CHANGE_PUB_KEY }}@" /etc/wireguard/client.conf
-          sudo sed -i --expression "s@CHANGE_PRE_KEY@${{ secrets.CHANGE_PRE_KEY }}@" /etc/wireguard/client.conf
-          sudo sed -i --expression "s@CHANGE_ENDPOINT@${{ secrets.CHANGE_ENDPOINT }}@" /etc/wireguard/client.conf
+          sudo sed -i --expression "s@CHANGE_IP@${{ secrets.CHANGE_IP }}@" /tmp/client.ovpn
+          sudo sed -i --expression "s@CHANGE_CA@${{ secrets.CHANGE_CA }}@" /tmp/client.ovpn
+          sudo sed -i --expression "s@CHANGE_CERT@${{ secrets.CHANGE_CERT }}@" /tmp/client.ovpn
+          sudo sed -i --expression "s@CHANGE_PRIV@${{ secrets.CHANGE_PRIV }}@" /tmp/client.ovpn
+          sudo sed -i --expression "s@CHANGE_TLS@${{ secrets.CHANGE_TLS }}@" /tmp/client.ovpn
           
-          sudo wg-quick up client
+          openvpn3 config-import --config /tmp/client.ovpn
+          openvpn3 session-start --config /tmp/client.ovpn
 
-          
       # - name: test
       #   run: |
       #     wget -qO - icanhazip.com
