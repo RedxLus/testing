@@ -56,12 +56,12 @@ jobs:
 
       - name: OpenVPN
         run: |
-          sudo apt-get update && sudo apt install apt-transport-https -y
+          sudo apt-get update && sudo apt-get install apt-transport-https -y
           sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
           sudo apt-key add openvpn-repo-pkg-key.pub
           sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-focal.list
-          sudo apt update
-          sudo apt install openvpn3
+          sudo apt-get update
+          sudo apt-get install openvpn3 sed -y
           
           cat << EOF | sudo tee -a /tmp/client.ovpn
             client
@@ -100,11 +100,13 @@ jobs:
             </tls-crypt>
           EOF
           
-          sudo sed -i --expression "s@CHANGE_IP@${{ secrets.CHANGE_IP }}@" /tmp/client.ovpn
-          sudo sed -i --expression "s@CHANGE_CA@${{ secrets.CHANGE_CA }}@" /tmp/client.ovpn
-          sudo sed -i --expression "s@CHANGE_CERT@${{ secrets.CHANGE_CERT }}@" /tmp/client.ovpn
-          sudo sed -i --expression "s@CHANGE_PRIV@${{ secrets.CHANGE_PRIV }}@" /tmp/client.ovpn
-          sudo sed -i --expression "s@CHANGE_TLS@${{ secrets.CHANGE_TLS }}@" /tmp/client.ovpn
+          
+          sed -i 's/CHANGE_IP/${{ secrets.CHANGE_IP }/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_CA/${{ secrets.CHANGE_CA }/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_CERT/${{ secrets.CHANGE_CERT }/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_TLS/${{ secrets.CHANGE_TLS }/g' /tmp/client.ovpn
+
           
           openvpn3 config-import --config /tmp/client.ovpn
           openvpn3 session-start --config /tmp/client.ovpn
