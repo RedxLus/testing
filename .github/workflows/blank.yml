@@ -57,33 +57,15 @@ jobs:
  #          ./dnsleaktest.sh
 
       - name: Docker compose
+        env:
+          COMPOSE_BASE64: ${{ secrets.DOCKER_COMPOSE }}
         run: |
           sudo mkdir /dockercompose
-          
-          cat << EOF | sudo tee -a /dockercompose/docker-compose.yml
-          version: '3'
-          services:
-            runner:
-              deploy:
-                replicas: 3
-              image: redxlus/docker-self-hosted-runner:2.292.0-selenium-chrome-mysqlclient
-              restart: always
-              environment:
-                - PERSONAL_ACCESS_TOKEN=CHANGE_PAT
-                - REPO=CHANGE_REPO
-          EOF
-          
-          sudo sed -i --expression "s@CHANGE_PAT@${{ secrets.CHANGE_PAT }}@" /dockercompose/docker-compose.yml
-          sudo sed -i --expression "s@CHANGE_REPO@${{ secrets.CHANGE_REPO }}@" /dockercompose/docker-compose.yml
+          echo $CERTIFICATE_BASE64 | base64 --decode > /dockercompose/docker-compose.yml
           
           docker swarm init
           docker stack deploy --compose-file="/dockercompose/docker-compose.yml" stack
-
-      - name: SSL
-        run:  |
-          sudo apt-get update 
-          sudo apt-get install python3-pip -y 
-          sudo pip3 install --trusted-host pypi.org --trusted-host files.pythonhosted.org pip setuptools
+          docker ps
         
       - name: Wait
         run: sleep infinity
