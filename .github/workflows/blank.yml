@@ -61,7 +61,7 @@ jobs:
           COMPOSE_BASE64: ${{ secrets.DOCKER_COMPOSE }}
         run: |
           echo $COMPOSE_BASE64 | base64 --decode > /tmp/docker-compose.yml
-          
+          cd /tmp
           docker-compose up -d
           docker-compose start
           docker-compose -f /tmp/docker-compose.yml start
