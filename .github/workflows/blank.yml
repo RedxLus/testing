@@ -8,60 +8,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Speedtest
+        run: |
+          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+          sudo apt update && sudo apt upgrade -y && sudo apt-get install speedtest
+          speedtest --accept-license --accept-gdpr
       - name: Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt upgrade -y
           sudo apt-get install runc containerd docker.io -y
           sudo systemctl start docker.service
           sudo systemctl enable docker.service
-          sudo docker version
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-    #   - name: Wireguard
-    #     run: |
-    #       sudo apt-get update && sudo apt-get install wireguard openresolv -y
-    #       sudo mkdir -p /etc/wireguard
-          
-    #       cat << EOF | sudo tee -a /etc/wireguard/client.conf
-    #       [Interface]
-    #       Address = 10.7.0.2/24
-    #       DNS = 1.1.1.1, 1.0.0.1
-    #       PrivateKey = CHANGE_PRIV_KEY
 
-    #       [Peer]
-    #       PublicKey = CHANGE_PUB_KEY
-    #       PresharedKey = CHANGE_PRE_KEY
-    #       AllowedIPs = 0.0.0.0/0, ::/0
-    #       Endpoint = CHANGE_ENDPOINT
-    #       PersistentKeepalive = 25
-    #       EOF
-          
-    #       sudo sed -i --expression "s@CHANGE_PRIV_KEY@${{ secrets.CHANGE_PRIV_KEY }}@" /etc/wireguard/client.conf
-    #       sudo sed -i --expression "s@CHANGE_PUB_KEY@${{ secrets.CHANGE_PUB_KEY }}@" /etc/wireguard/client.conf
-    #       sudo sed -i --expression "s@CHANGE_PRE_KEY@${{ secrets.CHANGE_PRE_KEY }}@" /etc/wireguard/client.conf
-    #       sudo sed -i --expression "s@CHANGE_ENDPOINT@${{ secrets.CHANGE_ENDPOINT }}@" /etc/wireguard/client.conf
-          
-    #       sudo wg-quick up client
-      - name: check
-        run: |
-          dig google.es | grep "SERVER"
-          sudo apt-get install resolvconf -y
-          sudo systemctl enable --now resolvconf.service
-          echo -e "nameserver 8.8.8.8 " | sudo tee /etc/resolvconf/resolv.conf.d/head
-          echo -e "nameserver 8.8.4.4 " | sudo tee /etc/resolvconf/resolv.conf.d/head
-          sudo resolvconf -u
-          dig google.es | grep "SERVER"
+          sudo curl -L "https://github.com/docker/compose/releases/download/2.5.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: OpenVPN install
         run: |
-          sudo apt-get update && sudo apt-get install apt-transport-https -y
+          sudo apt-get install apt-transport-https -y
           sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
           sudo apt-key add openvpn-repo-pkg-key.pub
           sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-focal.list
           sudo apt-get update
-          sudo apt-get install openvpn3 sed -y
+          sudo apt-get install openvpn3 -y
       
       - name: OpenVPN config
         env:
@@ -70,31 +38,24 @@ jobs:
           echo $CERTIFICATE_BASE64 | base64 --decode > /tmp/client.ovpn
           openvpn3 config-import --config /tmp/client.ovpn
           openvpn3 session-start --config /tmp/client.ovpn
+      - name: DNS
+        run: |
+          sudo apt-get install resolvconf -y
+          sudo systemctl enable --now resolvconf.service
+          echo -e "nameserver 192.168.0.32" | sudo tee /etc/resolvconf/resolv.conf.d/head
+          echo -e "nameserver 8.8.8.8 " | sudo tee /etc/resolvconf/resolv.conf.d/head
+          sudo resolvconf -u
+          dig google.es | grep "SERVER"
+      
+      - name: test
+        run: |
+           wget -qO - icanhazip.com
+      - name: test2
+        run: |
+           curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
+           chmod +x dnsleaktest.sh
+           ./dnsleaktest.sh
 
-      # - name: test
-      #   run: |
-      #     wget -qO - icanhazip.com
-      # - name: test2
-      #   run: |
-      #     curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
-      #     chmod +x dnsleaktest.sh
-      #     ./dnsleaktest.sh
-      #- name: Speedtest
-      #  run: |
-      #    curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-      #    sudo apt-get install speedtest
-      #    speedtest --accept-license --accept-gdpr
-    #   - name: Dockerfile
-    #     run: |
-    #       sudo mkdir /dockerfile
-          
-    #       cat << EOF | sudo tee -a /dockerfile/Dockerfile
-    #       FROM python:3.9.12-slim-bullseye
-    #       RUN apt-get update -yqq && apt-get install -yqq curl wget git gnupg unzip jq
-    #       CMD wget -qO - icanhazip.com
-    #       EOF
-          
-    #       docker build /dockerfile/. -t redxlus/get-ip
       - name: Docker compose
         run: |
           sudo mkdir /dockercompose
