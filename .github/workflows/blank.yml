@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Speedtest
-        run: |
-          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-          sudo apt update && sudo apt upgrade -y && sudo apt-get install speedtest
-          speedtest --accept-license --accept-gdpr
+#      - name: Speedtest
+#        run: |
+#          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+#          sudo apt update && sudo apt upgrade -y && sudo apt-get install speedtest
+#          speedtest --accept-license --accept-gdpr
       - name: Docker Compose
         run: |
           sudo apt-get install runc containerd docker.io -y
@@ -47,14 +47,14 @@ jobs:
           sudo resolvconf -u
           dig google.es | grep "SERVER"
       
-      - name: test
-        run: |
-           wget -qO - icanhazip.com
-      - name: test2
-        run: |
-           curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
-           chmod +x dnsleaktest.sh
-           ./dnsleaktest.sh
+ #     - name: test
+ #       run: |
+ #          wget -qO - icanhazip.com
+ #     - name: test2
+ #       run: |
+ #          curl https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.sh -o dnsleaktest.sh
+ #          chmod +x dnsleaktest.sh
+ #          ./dnsleaktest.sh
 
       - name: Docker compose
         run: |
