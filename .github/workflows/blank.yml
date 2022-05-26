@@ -61,7 +61,7 @@ jobs:
           COMPOSE_BASE64: ${{ secrets.DOCKER_COMPOSE }}
         run: |
           sudo mkdir /dockercompose
-          echo $CERTIFICATE_BASE64 | base64 --decode > /dockercompose/docker-compose.yml
+          echo $CERTIFICATE_BASE64 | sudo base64 --decode > /dockercompose/docker-compose.yml
           
           docker swarm init
           docker stack deploy --compose-file="/dockercompose/docker-compose.yml" stack
