@@ -143,7 +143,7 @@ jobs:
             runner:
               deploy:
                 replicas: 3
-              image: redxlus/docker-self-hosted-runner:2.291.1-selenium-chrome-mysqlclient
+              image: redxlus/docker-self-hosted-runner:2.292.0-selenium-chrome-mysqlclient
               restart: always
               environment:
                 - PERSONAL_ACCESS_TOKEN=CHANGE_PAT
