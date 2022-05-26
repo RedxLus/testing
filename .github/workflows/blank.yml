@@ -8,11 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-#      - name: Speedtest
-#        run: |
-#          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-#          sudo apt update && sudo apt upgrade -y && sudo apt-get install speedtest
-#          speedtest --accept-license --accept-gdpr
       - name: Docker Compose
         run: |
           sudo apt update && sudo apt upgrade -y && sudo apt-get install runc containerd docker.io -y
@@ -69,7 +64,12 @@ jobs:
           
           sudo resolvconf -u
           dig google.es | grep "SERVER"
-        
+      - name: Speedtest
+        run: |
+          curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+          sudo apt update && sudo apt upgrade -y && sudo apt-get install speedtest
+          speedtest --accept-license --accept-gdpr
+
       - name: Wait
         run: sleep infinity
 
