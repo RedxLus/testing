@@ -44,8 +44,9 @@ jobs:
     #       sudo sed -i --expression "s@CHANGE_ENDPOINT@${{ secrets.CHANGE_ENDPOINT }}@" /etc/wireguard/client.conf
           
     #       sudo wg-quick up client
-
-      - name: Wireguard
+      - name: check
+        run: cat /etc/network/interfaces
+      - name: OpenVPN
         run: |
           sudo apt-get update && sudo apt install apt-transport-https -y
           sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
