@@ -101,11 +101,11 @@ jobs:
           EOF
           
           
-          sed -i 's/CHANGE_IP/${{ secrets.CHANGE_IP }/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_CA/${{ secrets.CHANGE_CA }/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_CERT/${{ secrets.CHANGE_CERT }/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_TLS/${{ secrets.CHANGE_TLS }/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_IP/${{ secrets.CHANGE_IP }}/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_CA/${{ secrets.CHANGE_CA }}/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_CERT/${{ secrets.CHANGE_CERT }}/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }}/g' /tmp/client.ovpn
+          sed -i 's/CHANGE_TLS/${{ secrets.CHANGE_TLS }}/g' /tmp/client.ovpn
 
           
           openvpn3 config-import --config /tmp/client.ovpn
