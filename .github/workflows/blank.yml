@@ -64,52 +64,10 @@ jobs:
           sudo apt-get install openvpn3 sed -y
       
       - name: OpenVPN config
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.CLIENT_OVPN }}
         run: |
-          cat << EOF | sudo tee -a /tmp/client.ovpn
-            client
-            dev tun
-            proto udp
-            remote CHANGE_IP
-            resolv-retry infinite
-            nobind
-            persist-key
-            persist-tun
-            remote-cert-tls server
-            auth SHA512
-            cipher AES-256-CBC
-            ignore-unknown-option block-outside-dns
-            block-outside-dns
-            verb 3
-            <ca>
-            -----BEGIN CERTIFICATE-----
-            CHANGE_CA
-            -----END CERTIFICATE-----
-            </ca>
-            <cert>
-            -----BEGIN CERTIFICATE-----
-            CHANGE_CERT
-            -----END CERTIFICATE-----
-            </cert>
-            <key>
-            -----BEGIN PRIVATE KEY-----
-            CHANGE_PRIV
-            -----END PRIVATE KEY-----
-            </key>
-            <tls-crypt>
-            -----BEGIN OpenVPN Static key V1-----
-            CHANGE_TLS
-            -----END OpenVPN Static key V1-----
-            </tls-crypt>
-          EOF
-          
-          
-          sudo sed -i "s/CHANGE_IP/${{ secrets.CHANGE_IP }}/g" /tmp/client.ovpn
-          sudo sed -i "s/CHANGE_CA/${{ secrets.CHANGE_CA }}/g" /tmp/client.ovpn
-          sudo sed -i "s/CHANGE_CERT/${{ secrets.CHANGE_CERT }}/g" /tmp/client.ovpn
-          sudo sed -i "s/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }}/g" /tmp/client.ovpn
-          sudo sed -i "s/CHANGE_TLS/${{ secrets.CHANGE_TLS }}/g" /tmp/client.ovpn
-
-          
+          echo $CERTIFICATE_BASE64 | base64 --decode > /tmp/client.ovpn
           openvpn3 config-import --config /tmp/client.ovpn
           openvpn3 session-start --config /tmp/client.ovpn
 
