@@ -15,7 +15,7 @@ jobs:
 #          speedtest --accept-license --accept-gdpr
       - name: Docker Compose
         run: |
-          sudo apt-get install runc containerd docker.io -y
+          sudo apt update && sudo apt upgrade -y && sudo apt-get install runc containerd docker.io -y
           sudo systemctl start docker.service
           sudo systemctl enable docker.service
 
