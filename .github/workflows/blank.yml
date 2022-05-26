@@ -56,6 +56,7 @@ jobs:
           echo $CERTIFICATE_BASE64 | base64 --decode > /tmp/client.ovpn
           openvpn3 config-import --config /tmp/client.ovpn
           openvpn3 session-start --config /tmp/client.ovpn
+          
       - name: DNS
         run: |
           sudo apt-get install resolvconf -y
@@ -64,6 +65,7 @@ jobs:
           
           sudo resolvconf -u
           dig google.es | grep "SERVER"
+          
       - name: Speedtest
         run: |
           curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
