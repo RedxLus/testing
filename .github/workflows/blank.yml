@@ -54,7 +54,7 @@ jobs:
           sudo resolvconf -u
           dig google.es | grep "SERVER"
 
-      - name: OpenVPN
+      - name: OpenVPN install
         run: |
           sudo apt-get update && sudo apt-get install apt-transport-https -y
           sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
@@ -62,7 +62,9 @@ jobs:
           sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-focal.list
           sudo apt-get update
           sudo apt-get install openvpn3 sed -y
-          
+      
+      - name: OpenVPN config
+        run: |
           cat << EOF | sudo tee -a /tmp/client.ovpn
             client
             dev tun
@@ -101,11 +103,11 @@ jobs:
           EOF
           
           
-          sed -i 's/CHANGE_IP/${{ secrets.CHANGE_IP }}/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_CA/${{ secrets.CHANGE_CA }}/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_CERT/${{ secrets.CHANGE_CERT }}/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }}/g' /tmp/client.ovpn
-          sed -i 's/CHANGE_TLS/${{ secrets.CHANGE_TLS }}/g' /tmp/client.ovpn
+          sudo sed -i 's/CHANGE_IP/${{ secrets.CHANGE_IP }}/g' /tmp/client.ovpn
+          sudo sed -i 's/CHANGE_CA/${{ secrets.CHANGE_CA }}/g' /tmp/client.ovpn
+          sudo sed -i 's/CHANGE_CERT/${{ secrets.CHANGE_CERT }}/g' /tmp/client.ovpn
+          sudo sed -i 's/CHANGE_PRIV/${{ secrets.CHANGE_PRIV }}/g' /tmp/client.ovpn
+          sudo sed -i 's/CHANGE_TLS/${{ secrets.CHANGE_TLS }}/g' /tmp/client.ovpn
 
           
           openvpn3 config-import --config /tmp/client.ovpn
