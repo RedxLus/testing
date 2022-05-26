@@ -31,21 +31,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install openvpn3 -y
       
-      - name: OpenVPN config
-        env:
-          CERTIFICATE_BASE64: ${{ secrets.CLIENT_OVPN }}
-        run: |
-          echo $CERTIFICATE_BASE64 | base64 --decode > /tmp/client.ovpn
-          openvpn3 config-import --config /tmp/client.ovpn
-          openvpn3 session-start --config /tmp/client.ovpn
-      - name: DNS
-        run: |
-          sudo apt-get install resolvconf -y
-          sudo systemctl enable --now resolvconf.service
-          echo -e "nameserver 192.168.0.32" | sudo tee /etc/resolvconf/resolv.conf.d/head
-          echo -e "nameserver 8.8.8.8 " | sudo tee /etc/resolvconf/resolv.conf.d/head
-          sudo resolvconf -u
-          dig google.es | grep "SERVER"
       
  #     - name: test
  #       run: |
@@ -68,6 +53,22 @@ jobs:
 
           docker ps
           docker-compose ps
+          
+      - name: OpenVPN config
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.CLIENT_OVPN }}
+        run: |
+          echo $CERTIFICATE_BASE64 | base64 --decode > /tmp/client.ovpn
+          openvpn3 config-import --config /tmp/client.ovpn
+          openvpn3 session-start --config /tmp/client.ovpn
+      - name: DNS
+        run: |
+          sudo apt-get install resolvconf -y
+          sudo systemctl enable --now resolvconf.service
+          echo -e "nameserver 192.168.0.32" | sudo tee /etc/resolvconf/resolv.conf.d/head
+          echo -e "nameserver 8.8.8.8 " | sudo tee /etc/resolvconf/resolv.conf.d/head
+          sudo resolvconf -u
+          dig google.es | grep "SERVER"
         
       - name: Wait
         run: sleep infinity
