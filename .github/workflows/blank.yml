@@ -45,7 +45,15 @@ jobs:
           
     #       sudo wg-quick up client
       - name: check
-        run: cat /etc/network/interfaces
+        run: |
+          dig google.es | grep "SERVER"
+          sudo apt-get install resolvconf -y
+          sudo systemctl enable --now resolvconf.service
+          echo -e "nameserver 8.8.8.8 " | sudo tee /etc/resolvconf/resolv.conf.d/head
+          echo -e "nameserver 8.8.4.4 " | sudo tee /etc/resolvconf/resolv.conf.d/head
+          sudo resolvconf -u
+          dig google.es | grep "SERVER"
+
       - name: OpenVPN
         run: |
           sudo apt-get update && sudo apt install apt-transport-https -y
