@@ -19,7 +19,7 @@ jobs:
           sudo systemctl start docker.service
           sudo systemctl enable docker.service
 
-          sudo curl -L "https://github.com/docker/compose/releases/download/2.5.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: OpenVPN install
@@ -62,9 +62,12 @@ jobs:
         run: |
           echo $COMPOSE_BASE64 | base64 --decode > /tmp/docker-compose.yml
           
-          docker swarm init
-          docker stack deploy --compose-file="/tmp/docker-compose.yml" stack
+          docker-compose up -d
+          docker-compose start
+          docker-compose -f /tmp/docker-compose.yml start
+
           docker ps
+          docker-compose ps
         
       - name: Wait
         run: sleep infinity
