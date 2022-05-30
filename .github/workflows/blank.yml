@@ -14,7 +14,7 @@ jobs:
           sudo systemctl start docker.service
           sudo systemctl enable docker.service
 
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: OpenVPN install
@@ -45,7 +45,7 @@ jobs:
           docker-compose --compatibility up -d
           docker-compose start
           docker-compose -f /tmp/docker-compose.yml start
-
+          
           docker ps
           docker-compose ps
           
@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo apt-get install resolvconf -y
           sudo systemctl enable --now resolvconf.service
-          echo -e "nameserver 192.168.0.32" | sudo tee /etc/resolvconf/resolv.conf.d/head
+          echo -e "nameserver 192.168.0.41" | sudo tee /etc/resolvconf/resolv.conf.d/head
           
           sudo resolvconf -u
           dig google.es | grep "SERVER"
